@@ -44,20 +44,25 @@ def open_device(path) -> sqlite3.Connection:
     from device.batches import initialize_batches
     from device.issue import initialize_issues
     from device.pages import initialize_pages
+    from device.relations import initialize_relations
     from exchange.export import initialize_exports
     from tables.catalog import initialize_catalog
 
     return _open_database(path, (
         initialize_catalog, initialize_active_slot, initialize_batches,
-        initialize_pages, initialize_issues, initialize_exports,
+        initialize_pages, initialize_relations, initialize_issues, initialize_exports,
     ))
 
 
 def open_receiving(path) -> sqlite3.Connection:
+    from certification.snapshots import initialize_certifications
     from receiving.receipts import initialize_receipts
+    from receiving.relations import initialize_relation_handovers
     from receiving.rows import initialize_received_rows
     from reporting.snapshots import initialize_reports
 
     return _open_database(path, (
-        initialize_receipts, initialize_received_rows, initialize_reports,
+        initialize_receipts, initialize_received_rows,
+        initialize_relation_handovers, initialize_reports,
+        initialize_certifications,
     ))

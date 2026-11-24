@@ -2,6 +2,7 @@ import sqlite3
 
 from device.batches import load_batch
 from device.issue import load_issued_pages
+from device.relations import load_relations
 from exchange.encode import encode_exchange
 from exchange.manifest import build_manifest
 from storage import write_transaction
@@ -28,8 +29,9 @@ def export_batch(db: sqlite3.Connection, batch_id: str) -> bytes:
         if table is None:
             raise ValueError('封定批缺少原码表')
         pages = load_issued_pages(db, batch_id)
+        relations = load_relations(db, batch_id)
         manifest = build_manifest(batch, table, pages)
-        payload = encode_exchange(manifest, table, pages)
+        payload = encode_exchange(manifest, table, pages, relations)
         existing = db.execute(
             'SELECT payload FROM exported_batches WHERE batch_id = ?', (batch_id,)
         ).fetchone()

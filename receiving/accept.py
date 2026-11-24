@@ -3,6 +3,7 @@ import sqlite3
 from exchange.decode import decode_exchange
 from receiving.receipts import Receipt, find_receipt, insert_receipt
 from receiving.reconcile import translate_batch
+from receiving.relations import insert_relation_handover
 from receiving.rows import insert_accepted_rows
 from storage import write_transaction
 
@@ -21,4 +22,5 @@ def receive_batch(db: sqlite3.Connection, payload: bytes) -> Receipt:
                           'receipt-' + exchange.content_id)
         insert_receipt(db, receipt)
         insert_accepted_rows(db, rows)
+        insert_relation_handover(db, manifest.batch_id, exchange.relations)
     return receipt
